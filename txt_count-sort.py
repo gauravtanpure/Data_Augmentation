@@ -7,7 +7,7 @@ def extract_zip(zip_path, extract_to):
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
         zip_ref.extractall(extract_to)
 
-def process_inner_zip(zip_file_path, parent_zip_name):
+def process_inner_zip(zip_file_path):
     with tempfile.TemporaryDirectory() as temp_inner:
         extract_zip(zip_file_path, temp_inner)
 
@@ -21,9 +21,9 @@ def process_inner_zip(zip_file_path, parent_zip_name):
         # Sort the files
         sorted_txt = sorted(txt_files, key=lambda x: os.path.basename(x).lower())
 
-        # Create the nested output directory: parent_zip_name/inner_zip_name
+        # Output path: ./labels/<inner_zip_name>/
         inner_zip_name = os.path.splitext(os.path.basename(zip_file_path))[0]
-        output_dir = os.path.join(os.getcwd(), parent_zip_name, inner_zip_name)
+        output_dir = os.path.join("labels", inner_zip_name)
         os.makedirs(output_dir, exist_ok=True)
 
         for txt_file in sorted_txt:
@@ -32,8 +32,6 @@ def process_inner_zip(zip_file_path, parent_zip_name):
         print(f"[INFO] {len(sorted_txt)} .txt files copied to: {output_dir}")
 
 def sort_txt_from_each_inner_zip(main_zip_path):
-    parent_zip_name = os.path.splitext(os.path.basename(main_zip_path))[0]
-
     with tempfile.TemporaryDirectory() as temp_dir:
         print(f"[INFO] Extracting outer ZIP: {main_zip_path}")
         extract_zip(main_zip_path, temp_dir)
@@ -43,8 +41,8 @@ def sort_txt_from_each_inner_zip(main_zip_path):
                 if file.endswith('.zip'):
                     inner_zip_path = os.path.join(root, file)
                     print(f"\n[INFO] Processing inner ZIP: {inner_zip_path}")
-                    process_inner_zip(inner_zip_path, parent_zip_name)
+                    process_inner_zip(inner_zip_path)
 
 if __name__ == "__main__":
-    main_zip_path = "Data_Augmentation_Demo.zip"  # Replace with your actual zip filename
+    main_zip_path = "Data_Augmentation_txt.zip"
     sort_txt_from_each_inner_zip(main_zip_path)
