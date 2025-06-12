@@ -44,5 +44,5 @@ def sort_txt_from_each_inner_zip(main_zip_path):
                     process_inner_zip(inner_zip_path)
 
 if __name__ == "__main__":
-    main_zip_path = "Data_Augmentation_txt.zip"
+    main_zip_path = "sort_count_txt.zip"
     sort_txt_from_each_inner_zip(main_zip_path)
